@@ -8,6 +8,7 @@ class Cart:
 
     def add(self, product, quantity=1):
         product_id = str(product.id)
+        image_url = product.image.url if product.image else None
         if product_id in self.cart:
             self.cart[product_id]['quantity'] += quantity
         else:
@@ -15,7 +16,7 @@ class Cart:
                 'name': product.name,
                 'price': str(product.price),
                 'quantity': quantity,
-                'image': product.image.url,
+                'image': image_url,
             }
         self.save()
 
@@ -34,8 +35,15 @@ class Cart:
 
     def __iter__(self):
         from products.models import Product
-        for product_id, item in self.cart.items():
-            product = Product.objects.get(id=product_id)
+        for product_id, item in list(self.cart.items()):
+            try:
+                product = Product.objects.get(id=product_id)
+            except Product.DoesNotExist:
+                # If product was deleted, remove from cart
+                del self.cart[product_id]
+                self.save()
+                continue
+
             item['product'] = product
             item['total'] = float(item['price']) * item['quantity']
             yield item

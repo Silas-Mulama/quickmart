@@ -50,14 +50,17 @@
                   <div class="col-lg-6 col-12 mt-3 mt-lg-0 mb-lg-0 mb-3">
                     <div class="product-info d-flex align-items-center">
                       <div class="product-image">
-                        <!-- Using static to reference images -->
-                        <img src="{% static 'assets/img/product/'|add:item.product.image_url %}" alt="Product" class="img-fluid" loading="lazy">
+                        {% if item.image %}
+                          <img src="{{ item.image }}" alt="{{ item.product.name }}" class="img-fluid" loading="lazy">
+                        {% else %}
+                          <img src="{% static 'assets/img/default-product.png' %}" alt="No image" class="img-fluid" loading="lazy">
+                        {% endif %}
                       </div>
                       <div class="product-details">
                         <h6 class="product-title">{{ item.product.name }}</h6>
                         <div class="product-meta">
-                          <span class="product-color">Color: {{ item.product.color }}</span>
-                          <span class="product-size">Size: {{ item.product.size }}</span>
+                          {% if item.product.color %}<span class="product-color">Color: {{ item.product.color }}</span>{% endif %}
+                          {% if item.product.size %}<span class="product-size">Size: {{ item.product.size }}</span>{% endif %}
                         </div>
                         <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-item" type="button">
                           <i class="bi bi-trash"></i> Remove
@@ -72,18 +75,12 @@
                   </div>
                   <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
                     <div class="quantity-selector">
-                      <button class="quantity-btn decrease">
-                        <i class="bi bi-dash"></i>
-                      </button>
-                      <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="10">
-                      <button class="quantity-btn increase">
-                        <i class="bi bi-plus"></i>
-                      </button>
+                      <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="10" readonly>
                     </div>
                   </div>
                   <div class="col-lg-2 col-12 mt-3 mt-lg-0 text-center">
                     <div class="item-total">
-                      <span>${{ item.total_price }}</span>
+                      <span>${{ item.total|floatformat:2 }}</span>
                     </div>
                   </div>
                 </div>
@@ -93,26 +90,6 @@
               <div class="alert alert-info mt-3">Your cart is empty.</div>
             {% endif %}
 
-            <div class="cart-actions">
-              <div class="row">
-                <div class="col-lg-6 mb-3 mb-lg-0">
-                  <div class="coupon-form">
-                    <div class="input-group">
-                      <input type="text" class="form-control" placeholder="Coupon code">
-                      <button class="btn btn-outline-accent" type="button">Apply Coupon</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 text-md-end">
-                  <button class="btn btn-outline-heading me-2">
-                    <i class="bi bi-arrow-clockwise"></i> Update Cart
-                  </button>
-                  <button class="btn btn-outline-remove">
-                    <i class="bi bi-trash"></i> Clear Cart
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -122,14 +99,14 @@
 
             <div class="summary-item">
               <span class="summary-label">Subtotal</span>
-              <span class="summary-value">${{ cart.get_total_price }}</span>
+              <span class="summary-value">${{ cart.get_total_price|floatformat:2 }}</span>
             </div>
 
             <div class="summary-item shipping-item">
               <span class="summary-label">Shipping</span>
               <div class="shipping-options">
                 <div class="form-check text-end">
-                  <input class="form-check-input" type="radio" name="shipping" id="standard" checked=""/>
+                  <input class="form-check-input" type="radio" name="shipping" id="standard" checked/>
                   <label class="form-check-label" for="standard">
                     Standard Delivery - $4.99
                   </label>
@@ -161,7 +138,7 @@
 
             <div class="summary-total">
               <span class="summary-label">Total</span>
-              <span class="summary-value">${{ cart.get_total_price|add:"27.00"|add:"4.99" }}</span>
+              <span class="summary-value">${{ cart.get_total_price|add:"27.00"|add:"4.99"|floatformat:2 }}</span>
             </div>
 
             <div class="checkout-button">
