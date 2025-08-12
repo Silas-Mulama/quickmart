@@ -75,6 +75,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            print('logged in')
             messages.success(request, f"Welcome {user.username}!")
             return redirect('home')
         else:

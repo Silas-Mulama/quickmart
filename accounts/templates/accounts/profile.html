@@ -908,36 +908,39 @@
                     <!-- Personal Information -->
                     <div class="settings-section" data-aos="fade-up">
                       <h3>Personal Information</h3>
-                      <form method = "POST" class="php-email-form settings-form" action="{% url 'profile' %}">
+                 <form method="POST" class="php-email-form settings-form" action="{% url 'profile' %}">
                         {% csrf_token %}
                         <div class="row g-3">
-  <div class="col-md-6">
-    <label for="firstName" class="form-label">First Name</label>
-    <input type="text" class="form-control" id="firstName" name="first_name" value="{{ request.user.first_name }}" required>
-  </div>
-  <div class="col-md-6">
-    <label for="lastName" class="form-label">Last Name</label>
-    <input type="text" class="form-control" id="lastName" name="last_name" value="{{ request.user.last_name }}" required>
-  </div>
-  <div class="col-md-6">
-    <label for="email" class="form-label">Email</label>
-    <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}" required>
-  </div>
-  <div class="col-md-6">
-    <label for="phone" class="form-label">Phone</label>
-    <input type="tel" class="form-control" id="phone" name="phone" value="{{ request.user.profile.phone }}">
-  </div>
-</div>
+                            <div class="col-md-6">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="first_name" value="{{ request.user.first_name }}" required>
+                            </div>
 
+                            <div class="col-md-6">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="last_name" value="{{ request.user.last_name }}" required>
+                            </div>
 
-                        <div class="form-buttons">
-                          <button type="submit" class="btn-save">Save Changes</button>
+                            <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ request.user.profile.phone }}">
+                            </div>
                         </div>
 
-                        {% comment %} <div class="loading">Loading</div> {% endcomment %}
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-save">Save Changes</button>
+                        </div>
+
+                        <div class="loading">Loading</div>
                         <div class="error-message"></div>
                         <div class="sent-message">Your changes have been saved successfully!</div>
-                      </form>
+                        </form>
+
                     </div>
 
                     <!-- Email Preferences -->
