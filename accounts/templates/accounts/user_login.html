@@ -1,0 +1,100 @@
+{% extends "main.html" %}
+{% block title %}User Login{% endblock %}
+
+{% block content %}
+<main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Login</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="{% url 'products_list' %}">Home</a></li>
+            <li class="current">Login</li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- Login Section -->
+    <section id="login" class="login section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-md-10">
+            <div class="auth-container" data-aos="fade-in" data-aos-delay="200">
+
+              <!-- Login Form -->
+              <div class="auth-form login-form active">
+                <div class="form-header">
+                  <h3>Welcome Back</h3>
+                  <p>Sign in to your account</p>
+                </div>
+
+                <!-- Actual Form -->
+                <form method="post" action="{% url 'login-user' %}" class="auth-form-content">
+                  {% csrf_token %}
+                  
+                  <!-- Email Field (Username) -->
+                  <div class="input-group mb-3">
+                    <span class="input-icon">
+                      <i class="bi bi-envelope"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required="">
+                    {% comment %} <input type="email" name="username" class="form-control" placeholder="Email address" required="" autocomplete="email"> {% endcomment %}
+                  </div>
+
+                  <!-- Password Field -->
+                  <div class="input-group mb-3">
+                    <span class="input-icon">
+                      <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="current-password">
+                    <span class="password-toggle">
+                      <i class="bi bi-eye"></i>
+                    </span>
+                  </div>
+
+                  <!-- Remember Me and Forgot Password Options -->
+                  <div class="form-options mb-4">
+                    <div class="remember-me">
+                      <input type="checkbox" id="rememberLogin" name="remember_me">
+                      <label for="rememberLogin">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" class="auth-btn primary-btn mb-3">
+                    Sign In
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+
+                  <!-- Divider -->
+                  <div class="divider">
+                    <span>or</span>
+                  </div>
+
+                  <!-- Social Login Button (Optional) -->
+                  <button type="button" class="auth-btn social-btn">
+                    <i class="bi bi-google"></i>
+                    Continue with Google
+                  </button>
+
+                  <!-- Switch to Register Form Link -->
+                  <div class="switch-form">
+                    <span>Don't have an account?</span>
+                    <button type="button" class="switch-btn" data-target="register">Create account</button>
+                  </div>
+                </form>
+              </div>
+              <!-- End Login Form -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- /Login Section -->
+
+</main>
+{% endblock %}
