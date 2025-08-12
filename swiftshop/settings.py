@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Debug mode
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = False
 
 # Allowed hosts
 ALLOWED_HOSTS=['127.0.0.1','192.168.10.236','quickmart-4cum.onrender.com']
