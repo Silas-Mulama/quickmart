@@ -13,7 +13,19 @@ from django.contrib.auth.models import User
 from orders.models import Order
 from products.models import Product
 from django.db.models import Sum
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
+from .forms import CustomUserCreationForm, UserUpdateForm, ProfileUpdateForm
+from .models import Profile
 
+
+# -------------------------
+# REGISTER
+# -------------------------
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -24,19 +36,26 @@ def register(request):
             user.email = form.cleaned_data['email']
             user.save()
 
-            # Send email to admin
-            send_mail(
-                subject='🧑‍💻 New User Registration',
-                message=f"""A new user has registered:
+            # Ensure profile exists (signals will handle this too)
+            Profile.objects.get_or_create(user=user)
+
+            # Send email to admin (optional)
+            try:
+                send_mail(
+                    subject='🧑‍💻 New User Registration',
+                    message=f"""
+A new user has registered:
 
 Username: {user.username}
 Full Name: {user.first_name} {user.last_name}
 Email: {user.email}
 """,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=['team.eduquestm.com@gmail.com'],
-                fail_silently=False,
-            )
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=['team.eduquestm.com@gmail.com'],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                print("Email send failed:", e)
 
             messages.success(request, "Registration successful. Please log in.")
             return redirect('login-user')
@@ -46,80 +65,79 @@ Email: {user.email}
     return render(request, 'accounts/register.html', {'form': form})
 
 
-
+# -------------------------
+# LOGIN
+# -------------------------
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user is not None and not user.is_staff:
+        if user is not None:
             login(request, user)
-            print('Logged  IN.............')
-            return redirect('products_list')
+            messages.success(request, f"Welcome {user.username}!")
+            return redirect('home')
         else:
-            print("Error Occurred.........")
-            messages.error(request, "Invalid credentials or not a regular user.")
+            messages.error(request, "Invalid username or password")
     return render(request, 'accounts/user_login.html')
 
 
-def admin_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        admin_user = authenticate(request, username=username, password=password)
-        if admin_user is not None and admin_user.is_staff:
-            login(request, admin_user)
-            return redirect('admin_dashboard')
-        else:
-            messages.error(request, "Invalid admin credentials.")
-    return render(request, 'accounts/admin_login.html')
-
-
+# -------------------------
+# LOGOUT
+# -------------------------
+@login_required
 def logout_user(request):
     logout(request)
+    messages.success(request, "You have been logged out.")
     return redirect('login-user')
 
 
-from django.db.models.functions import TruncMonth
-from django.db.models import Sum
-from collections import OrderedDict
-import calendar
+# -------------------------
+# PROFILE VIEW
+# -------------------------
+@login_required
+def profile_view(request):
+    user = request.user
+    profile = user.profile
 
-@user_passes_test(lambda u: u.is_staff)
-def admin_dashboard(request):
-    total_users = User.objects.count()
-    total_products = Product.objects.count()
-    total_orders = Order.objects.count()
-    total_sales = Order.objects.filter(status="approved").aggregate(total=Sum("total_price"))["total"] or 0
-    pending_orders = Order.objects.filter(status="pending").count()
+    if request.method == 'POST':
+        user.first_name = request.POST('first_name')
+        user.last_name = request.POST('last_name')
+        user.email = request.POST('email')
+        profile.phone = request.POST('phone')
 
-    # Group sales by month
-    monthly_sales = (
-        Order.objects.filter(status="approved")
-        .annotate(month=TruncMonth("created_at"))
-        .values("month")
-        .annotate(total=Sum("total_price"))
-        .order_by("month")
-    )
+        user.save()
+        profile.save()
 
-    # Format the results
-    sales_labels = []
-    sales_data = []
-    for entry in monthly_sales:
-        month_name = calendar.month_name[entry["month"].month]
-        sales_labels.append(month_name)
-        sales_data.append(float(entry["total"]))
+        messages.success(request, "Your changes have been saved successfully!")
+        return redirect('profile')  # replace with your URL name
 
-    context = {
-        'total_users': total_users,
-        'total_products': total_products,
-        'total_orders': total_orders,
-        'total_sales': total_sales,
-        'pending_orders': pending_orders,
-        'sales_labels': sales_labels,
-        'sales_data': sales_data,
-    }
-    return render(request, 'accounts/admin_dashboard.html', context)
+    return render(request, 'accounts/profile.html', {'profile': profile})
+
+
+# -------------------------
+# PROFILE EDIT
+# -------------------------
+@login_required
+def profile_edit(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile
+        )
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    return render(request, 'accounts/edit_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
 
 
 
