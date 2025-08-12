@@ -7,7 +7,7 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pics/', default='assets/person/def.jpg', blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', default='assets/img/person/def.jpg', blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     def __str__(self):
         return f"{self.user.username} Profile"
