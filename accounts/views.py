@@ -34,7 +34,6 @@ def register(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
-            user.is_stuff=True
             user.save()
 
             # Ensure profile exists (signals will handle this too)
