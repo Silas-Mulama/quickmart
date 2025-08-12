@@ -41,7 +41,7 @@
               <div class="user-info" data-aos="fade-right">
                 <div class="user-avatar">
                     {% if request.user.profile.profile_picture %}
-                             <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile">
+                             <img src="{{request.user.profile.profile_picture.url }}" alt="Profile">
                     {% else %}
                     <img src="{% static 'assets/img/person/def.jpg' %}" alt="Default Profile">
                     {% endif %}
