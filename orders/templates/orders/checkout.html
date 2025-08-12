@@ -203,7 +203,7 @@
                     <div class="place-order-container">
                       <button type="submit" class="btn btn-primary place-order-btn">
                         <span class="btn-text">Place Order</span>
-                        <span class="btn-price">$240.96</span>
+                        <span class="btn-price">${{ cart.get_total_price|add:"9.99"|add:"21.00"|floatformat:2 }}</span>
                       </button>
                     </div>
                   </div>
@@ -212,86 +212,84 @@
             </div>
           </div>
 
-          <div class="col-lg-5">
-            <!-- Order Summary -->
-            <div class="order-summary" data-aos="fade-left" data-aos-delay="200">
-              <div class="order-summary-header">
-                <h3>Order Summary</h3>
-                <span class="item-count">2 Items</span>
-              </div>
+        <div class="col-lg-5">
+  <!-- Order Summary -->
+  <div class="order-summary" data-aos="fade-left" data-aos-delay="200">
+    <div class="order-summary-header">
+      <h3>Order Summary</h3>
+      <span class="item-count">{{ cart|length }} Item{% if cart|length != 1 %}s{% endif %}</span>
+    </div>
 
-              <div class="order-summary-content">
-                <div class="order-items">
-                  <div class="order-item">
-                    <div class="order-item-image">
-                      <img src="{% static 'assets/img/product/product-1.webp' %}" alt="Product" class="img-fluid"/>
-                    </div>
-                    <div class="order-item-details">
-                      <h4>Lorem Ipsum Dolor</h4>
-                      <p class="order-item-variant">Color: Black | Size: M</p>
-                      <div class="order-item-price">
-                        <span class="quantity">1 ×</span>
-                        <span class="price">$89.99</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="order-item">
-                    <div class="order-item-image">
-                      <img src="{% static 'assets/img/product/product-2.webp' %}" alt="Product" class="img-fluid"/>
-                    </div>
-                    <div class="order-item-details">
-                      <h4>Sit Amet Consectetur</h4>
-                      <p class="order-item-variant">Color: White | Size: L</p>
-                      <div class="order-item-price">
-                        <span class="quantity">2 ×</span>
-                        <span class="price">$59.99</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="promo-code">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Promo Code" aria-label="Promo Code"/>
-                    <button class="btn btn-outline-primary" type="button">Apply</button>
-                  </div>
-                </div>
-
-                <div class="order-totals">
-                  <div class="order-subtotal d-flex justify-content-between">
-                    <span>Subtotal</span>
-                    <span>$209.97</span>
-                  </div>
-                  <div class="order-shipping d-flex justify-content-between">
-                    <span>Shipping</span>
-                    <span>$9.99</span>
-                  </div>
-                  <div class="order-tax d-flex justify-content-between">
-                    <span>Tax</span>
-                    <span>$21.00</span>
-                  </div>
-                  <div class="order-total d-flex justify-content-between">
-                    <span>Total</span>
-                    <span>$240.96</span>
-                  </div>
-                </div>
-
-                <div class="secure-checkout">
-                  <div class="secure-checkout-header">
-                    <i class="bi bi-shield-lock"></i>
-                    <span>Secure Checkout</span>
-                  </div>
-                  <div class="payment-icons">
-                    <i class="bi bi-credit-card-2-front"></i>
-                    <i class="bi bi-credit-card"></i>
-                    <i class="bi bi-paypal"></i>
-                    <i class="bi bi-apple"></i>
-                  </div>
-                </div>
-              </div>
+    <div class="order-summary-content">
+      <div class="order-items">
+        {% for item in cart %}
+        <div class="order-item">
+          <div class="order-item-image">
+            {% if item.image %}
+              <img src="{{ item.image }}" alt="{{ item.product.name }}" class="img-fluid"/>
+            {% else %}
+              <img src="{% static 'assets/img/default-product.png' %}" alt="No image" class="img-fluid"/>
+            {% endif %}
+          </div>
+          <div class="order-item-details">
+            <h4>{{ item.product.name }}</h4>
+            <p class="order-item-variant">
+              {% if item.product.color %}Color: {{ item.product.color }}{% endif %}
+              {% if item.product.size %} | Size: {{ item.product.size }}{% endif %}
+            </p>
+            <div class="order-item-price">
+              <span class="quantity">{{ item.quantity }} ×</span>
+              <span class="price">${{ item.product.price }}</span>
             </div>
           </div>
+        </div>
+        {% empty %}
+        <p>Your cart is empty.</p>
+        {% endfor %}
+      </div>
+
+      <div class="promo-code mt-4">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Promo Code" aria-label="Promo Code"/>
+          <button class="btn btn-outline-primary" type="button">Apply</button>
+        </div>
+      </div>
+
+      <div class="order-totals mt-4">
+        <div class="order-subtotal d-flex justify-content-between">
+          <span>Subtotal</span>
+          <span>${{ cart.get_total_price|floatformat:2 }}</span>
+        </div>
+        <div class="order-shipping d-flex justify-content-between">
+          <span>Shipping</span>
+          <span>$9.99</span> <!-- You can make this dynamic if you want -->
+        </div>
+        <div class="order-tax d-flex justify-content-between">
+          <span>Tax</span>
+          <span>$21.00</span> <!-- Also dynamic if needed -->
+        </div>
+        <div class="order-total d-flex justify-content-between fw-bold">
+          <span>Total</span>
+          <span>${{ cart.get_total_price|add:"9.99"|add:"21.00"|floatformat:2 }}</span>
+        </div>
+      </div>
+
+      <div class="secure-checkout mt-4">
+        <div class="secure-checkout-header d-flex align-items-center mb-2">
+          <i class="bi bi-shield-lock me-2"></i>
+          <span>Secure Checkout</span>
+        </div>
+        <div class="payment-icons fs-4 text-secondary">
+          <i class="bi bi-credit-card-2-front me-2"></i>
+          <i class="bi bi-credit-card me-2"></i>
+          <i class="bi bi-paypal me-2"></i>
+          <i class="bi bi-apple"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
 
         <!-- Terms and Privacy Modals -->
