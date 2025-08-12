@@ -76,11 +76,14 @@ WSGI_APPLICATION = 'swiftshop.wsgi.application'
 
 # Database - Always from DATABASE_URL in .env
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',  # must be exactly this for Postgres
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '5432'),  # default port if not set
+    }
 }
 
 # Password validators
