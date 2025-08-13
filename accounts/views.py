@@ -80,7 +80,7 @@ def user_login(request):
             return redirect('home')
         else:
             messages.error(request, "Invalid username or password")
-    return render(request, 'accounts/user_login.html')
+    return render(request, 'accounts/login.html')
 
 
 # -------------------------
