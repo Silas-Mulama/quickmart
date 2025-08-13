@@ -334,7 +334,7 @@
 <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
 
 
-  <!-- Main JS File -->
+
   <script>
 
 
@@ -352,6 +352,17 @@
 });
 
   </script>
+
+  <script>
+  window.addEventListener("load", function() {
+    const preloader = document.getElementById("preloader");
+    if (preloader) {
+      preloader.classList.add("fade-out");
+    }
+  });
+</script>
+
+    <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
 
 </body>

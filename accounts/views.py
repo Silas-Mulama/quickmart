@@ -102,16 +102,16 @@ def profile_view(request):
     profile = user.profile
 
     if request.method == 'POST':
-        user.first_name = request.POST('first_name')
-        user.last_name = request.POST('last_name')
-        user.email = request.POST('email')
-        profile.phone = request.POST('phone')
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.email = request.POST['email']
+        profile.phone = request.POST['phone']
 
         user.save()
         profile.save()
 
         messages.success(request, "Your changes have been saved successfully!")
-        return redirect('profile')  # replace with your URL name
+        return redirect('home')  # replace with your URL name
 
     return render(request, 'accounts/profile.html', {'profile': profile})
 

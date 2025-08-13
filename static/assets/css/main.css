@@ -3059,7 +3059,7 @@ section,
   width: 200%;
   height: 200%;
   background: conic-gradient(from 0deg, transparent 0deg, color-mix(in srgb, var(--accent-color), transparent 98%) 90deg, transparent 180deg, color-mix(in srgb, var(--heading-color), transparent 98%) 270deg, transparent 360deg);
-  animation: rotate 20s linear infinite;
+  animation: rotate 3s linear infinite;
   z-index: 1;
 }
 

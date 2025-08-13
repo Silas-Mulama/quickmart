@@ -229,8 +229,8 @@
   -webkit-transform: translate(-50%, -50%);
   width: 66px;
   height: 20px;
-  animation: drift-loader-rotate 1800ms infinite linear;
-  -webkit-animation: drift-loader-rotate 1800ms infinite linear;
+  animation: drift-loader-rotate 1s infinite linear;
+  -webkit-animation: drift-loader-rotate 1s infinite linear;
 }
 
 .drift-zoom-pane-loader:before,
