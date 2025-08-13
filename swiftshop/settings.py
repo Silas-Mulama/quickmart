@@ -77,14 +77,17 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.debug',   # good for dev
+                'django.template.context_processors.request', # REQUIRED for allauth
+                'django.template.context_processors.static',  # for static file URLs
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart_item_count',
+                'cart.context_processors.cart_item_count',    # your custom one
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'swiftshop.wsgi.application'
 
